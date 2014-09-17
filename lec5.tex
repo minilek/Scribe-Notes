@@ -139,7 +139,9 @@ $B_{i+1} \leq n \cdot \left(\frac{B_i}{n}\right)^2$, i.e., $\left(\frac{B_{i+1}}
 Let's say that $\frac{B_{10}}{n} \leq \frac{1}{2}$. Then, $\frac{B_{10 + j}}{n} \leq \frac{1}{2^{2^j}}$. We
 are done with $B_{10 + j}{n} < \frac{1}{n}$, which append when $j \geq \lg \lg n$.
 
-\underline{Proof:}
+\underline{More rigorous details:}
+
+Below we outline how a more rigorous proof would go.
 
 Define $\alpha_6 = \frac{n}{2e}, \alpha_{i+1} = \frac{e \alpha_i^2}{n}$. If $E_i$ is the event that $B_i \leq \alpha_i$,
 we will show that who all events $E_i$ occur.
@@ -147,33 +149,49 @@ we will show that who all events $E_i$ occur.
 First, $\Pr(E_6) = 1$ because $\frac{n}{2e} > \frac{n}{6}$.
 
 We would now like to show that $\Pr(\vee_i E_i)$ is large. By the union bound, this is at least 
-\begin{align*}
-1 - \sum_i \Pr(\neg E_i) &\ge 1 - \Pr(\neg E_0) - \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i))\\
-{}& 1 -  \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i))
-\end{align*}
+\begin{align}
+\nonumber 1 - \sum_i \Pr(\neg E_i) &\ge 1 - \Pr(\neg E_0) - \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i))\\
+{}& 1 -  \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i)) \label{eqn:union}
+\end{align}
 
 It thus suffices to bound $\Pr(\neg E_{i+1} | E_i)$ and $\Pr(\neg E_i)$.
 
-\underline{Claim 1:} $\Pr(\neg E_{i+1} | E_i) \leq C \cdot \Pr(Bin\left(\left(\frac{\alpha_i}{n}\right)^2\right) > \alpha_{i+1})$
+\begin{lemma}\label{lem:binomial}
+$$\Pr(\neg E_{i+1} | E_i) \leq \frac{\Pr(Bin\left(n, \left(\frac{\alpha_i}{n}\right)^2\right) > \alpha_{i+1})}{\Pr(E_i)}$$
+where $Bin(n,p)$ is a binomial random variable with parameter $n,p$. That is, it is the sum of $n$ independent random Bernoulli random variables each with expectation $p$. Recall that a Bernoulli random variable is supported in $\{0,1\}$.
+\end{lemma}
 \begin{proof}
+For an item $j$, let the height $H(j)$ be such that $j$ is the $H(j)$th ball inserted into its bin. Let $Y_j$ be an indicator random variable for the event $H(j) \ge i+1$. Then certainly $B_{i+1} \le \sum_j Y_j$. It thus suffices to upper bound $\Pr(\sum_j Y_j > \alpha_{i+1} | E_i)$.
+
 By Bayes' rule,
 $$
-\Pr(\neg E_{i+1} | E_i) = \frac{\Pr(\neg E_{i+1}\wedge E_i)}{\Pr(E_i)} = \frac{\Pr((B_{i+1} > \alpha_{i+1} \wedge E_i) }{\Pr(E_i)}
+\Pr(\sum_j Y_j > \alpha_{i+1} | E_i) = \frac{\Pr((\sum_j Y_j > \alpha_{i+1}) \wedge E_i) }{\Pr(E_i)}
 $$
-\textbf{WILL FINISH THIS}
+We then want to bound the numerator of the right hand side. Let $X_j$ be a Bernoulli random variable with $\E X_j = (\alpha_i/n)^2$. We will introduce the following ``coupling'' argument, which defines two sets of random variables $\{X_j\}, \{\tilde{Y}_j\}$ on the same probability space. Imagine picking uniform random variables $U_j,U_j'$ in $[0,1)$. If both $U_j,U_j' \le \alpha_i/n$, then we set $X_j$ to $1$; else we set $X_j$ to $0$. Now, imagine labeling the points $a_0=0/n, a_1 = 1/n, \ldots, a_n = n/n$ on the interval $[0,1]$. As we will describe, these points correspond to the $n$ bins, in reverse sorted order by load. $U_j,U_j'$ when generated will land in $[a_{t-1}, a_t)$ and $[a_{t'-1},a_{t'})$, respectively, for some $t,t'$. We then imagine placing a ball in the least loaded of bins $t,t'$ (recall $t=1$ corresponds to the heaviest bin). If we are at a point where $E_i$ no longer holds, then we set $\tilde{Y}_j = 0$. Otherwise we set $\tilde{Y}_j = 1$ iff $H(j) \ge i+1$ according to this process. Now observe two things:
+\begin{enumerate}
+\item[(a)] $\tilde{Y}_j \le X_j$ always (with probability $1$). Therefore
+\begin{equation}
+\Pr(\sum_j \tilde{Y}_j > \alpha_{i+1}) \le \Pr(\sum_j X_j > \alpha_{i+1})\label{eqn:ingredient1}
+\end{equation}
+\item[(b)] In any point in the above defined probability space where both $E_i$ and $\sum_j Y_j > \alpha_{i+1}$ hold, it also holds that $\sum_j \tilde{Y}_j > \alpha_{i+1}$. Thus
+\begin{equation}
+\Pr((\sum_j Y_j > \alpha_{i+1})\wedge E_i) \le \Pr(\sum_j \tilde{Y}_j > \alpha_{i+1})\label{eqn:ingredient2}
+\end{equation}
+\end{enumerate}
+Combining Eqs.\ \eqref{eqn:ingredient1} and \eqref{eqn:ingredient2} concludes the proof.
 \end{proof}
 
-Proof left as an exercise to the reader. Uses Chernoff and union bound.
+We now $\Pr(E_6) = 1$ (and equivalently $\Pr(\neg E_6) = 0$). By an inductive argument, once we upper bound $\Pr(\neg E_i)$, we can invoke Lemma~\ref{lem:binomial} to yield that upper bounding $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1})$ implies a bound on $\Pr(\neg E_{i+1} | E_i)$ (since in our inductive hypothesis we claim we have an upper bound on $\Pr(\neg E_i)$, and thus a lower bound on $\Pr(E_i) = 1 - \Pr(\neg E_i)$). One can bound $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1}) \le e^{-C\alpha_i^2 / n}$ via the Chernoff bound (calculation left as an exercise to the reader!). For the reader interested in seeing all the calculations worked out, see the notes at \texttt{http://homes.cs.washington.edu/{\textasciitilde}jrl/cs525/scribes08/lec11.pdf}.
 
 \section{Next Time}
 
-We will talk about data structures + amortized analysis, heaps (binomial and Fibonacci), and splay
-trees.
+We will talk about data structures + amortized analysis, heaps (binomial and Fibonacci \cite{FT87}), and splay
+trees \cite{ST85}.
 
 For heaps, we store $n$ items w/keys (comparable). We can insert($x$), decreaseKey($x, k$),
 and deleteMin(). Dijkstra's algorithm uses heaps in its implementation, and its runtime is
 $m \cdot \text{insert} + m \cdot \text{decreaseKey} + n \cdot \text{deleteMin}$ if there are $n$
-vertices and $m$ edges.
+vertices and $m$ edges. With binary heaps, all operations take $\log n$ time and thus Dijkstra runs in time $O((m+n)\log n)$. We will see that Fibonacci heaps support insert and decreaseKey each in $O(1)$ amortized time, and deleteMin in $O(\log n)$ amortized time, thus speeding up Dijkstra to $O(m + n\log n)$.
 
 
 \bibliographystyle{alpha}
@@ -185,17 +203,26 @@ Yossi~Azar, Andrei Z.~Broder, Anna R.~Karlin, Eli~Upfal.
 \newblock Balanced Allocations.
 \newblock {\em SIAM J. Comput.}, 29(1):180--200, 1999.
 
-\bibitem{Vocking2003}
-Berthold~V\"ocking.
-\newblock How asymmetry helps load balancing.
-\newblock {\em J. ACM.}, 50(4):568--589, 2003.
+\bibitem{FT87}
+Michael L. Fredman, Robert Endre Tarjan.
+Fibonacci heaps and their uses in improved network optimization algorithms.
+{\em J. ACM} 34(3), pages 596--615l, 1987.
 
 \bibitem{Mitzenmacher}
 Michael~Mitzenmacher, Andr\'{e}a W.~Richa, Ramesh~Sitaraman.
 \newblock Chapter 9: The Power of Two Random Choices:
 A Survey Of Techniques And Results.
 \newblock {\em Handbook of Randomized Computing}. 2001. Kluwer Academic Publishers.
-\newblock
+
+\bibitem{ST85}
+Daniel Dominic Sleator, Robert Endre Tarjan.
+Self-Adjusting Binary Search Trees. 
+{\em J. ACM} 32(3), pages 652--686, 1985.
+
+\bibitem{Vocking2003}
+Berthold~V\"ocking.
+\newblock How asymmetry helps load balancing.
+\newblock {\em J. ACM.}, 50(4):568--589, 2003.
 
 \end{thebibliography}
 
