@@ -181,7 +181,7 @@ We then want to bound the numerator of the right hand side. Let $X_j$ be a Berno
 Combining Eqs.\ \eqref{eqn:ingredient1} and \eqref{eqn:ingredient2} concludes the proof.
 \end{proof}
 
-We now $\Pr(E_6) = 1$ (and equivalently $\Pr(\neg E_6) = 0$). By an inductive argument, once we upper bound $\Pr(\neg E_i)$, we can invoke Lemma~\ref{lem:binomial} to yield that upper bounding $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1})$ implies a bound on $\Pr(\neg E_{i+1} | E_i)$ (since in our inductive hypothesis we claim we have an upper bound on $\Pr(\neg E_i)$, and thus a lower bound on $\Pr(E_i) = 1 - \Pr(\neg E_i)$). One can bound $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1}) \le e^{-C\alpha_i^2 / n}$ via the Chernoff bound (calculation left as an exercise to the reader!). For the reader interested in seeing all the calculations worked out, see the notes at \texttt{http://homes.cs.washington.edu/{\textasciitilde}jrl/cs525/scribes08/lec11.pdf}.
+We now $\Pr(E_6) = 1$ (and equivalently $\Pr(\neg E_6) = 0$). By an inductive argument, once we upper bound $\Pr(\neg E_i)$, we can invoke Lemma~\ref{lem:binomial} to yield that upper bounding $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1})$ implies a bound on $\Pr(\neg E_{i+1} | E_i)$ (since in our inductive hypothesis we claim we have an upper bound on $\Pr(\neg E_i)$, and thus a lower bound on $\Pr(E_i) = 1 - \Pr(\neg E_i)$). One can bound $\Pr(Bin(n, (\alpha_i/n)^2) > \alpha_{i+1}) \le e^{-C\alpha_i^2 / n}$ via the Chernoff bound (calculation left as an exercise to the reader!). For the reader interested in seeing all the calculations worked out, see the notes at \texttt{http://www.cs.berkeley.edu/{\textasciitilde}sinclair/cs271/n15.pdf}.
 
 \section{Next Time}
 
