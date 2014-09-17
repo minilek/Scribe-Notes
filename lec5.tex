@@ -146,9 +146,21 @@ we will show that who all events $E_i$ occur.
 
 First, $\Pr(E_6) = 1$ because $\frac{n}{2e} > \frac{n}{6}$.
 
-\underline{Claim 1:} $\Pr(B_{i+1} > \alpha_{i+ 1} | E_i) \leq C \cdot \Pr(Bin\left(\left(\frac{\alpha_i}{n}\right)^2\right) > \alpha_{i+1})$
-\begin{proof}
+We would now like to show that $\Pr(\vee_i E_i)$ is large. By the union bound, this is at least 
+\begin{align*}
+1 - \sum_i \Pr(\neg E_i) &\ge 1 - \Pr(\neg E_0) - \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i))\\
+{}& 1 -  \sum_i (\Pr(\neg E_{i+1}|E_i) + \Pr(\neg E_i))
+\end{align*}
 
+It thus suffices to bound $\Pr(\neg E_{i+1} | E_i)$ and $\Pr(\neg E_i)$.
+
+\underline{Claim 1:} $\Pr(\neg E_{i+1} | E_i) \leq C \cdot \Pr(Bin\left(\left(\frac{\alpha_i}{n}\right)^2\right) > \alpha_{i+1})$
+\begin{proof}
+By Bayes' rule,
+$$
+\Pr(\neg E_{i+1} | E_i) = \frac{\Pr(\neg E_{i+1}\wedge E_i)}{\Pr(E_i)} = \frac{\Pr((B_{i+1} > \alpha_{i+1} \wedge E_i) }{\Pr(E_i)}
+$$
+\textbf{WILL FINISH THIS}
 \end{proof}
 
 Proof left as an exercise to the reader. Uses Chernoff and union bound.
